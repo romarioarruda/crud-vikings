@@ -3,7 +3,7 @@
 class FuncionariosController {
 
     public function getAll(){
-        $result =  Funcionarios::get();
+        $result =  Funcionarios::getAllJoin();
         $dados  = [];
 
         if(!$result) return Flight::json(array('funcionarios' => $dados));
@@ -13,6 +13,7 @@ class FuncionariosController {
                 'id_registro' => $valor->id_registro,
                 'nome' =>$valor->nome,
                 'email' => $valor->email,
+                'telefone' => $valor->telefone,
                 'last_updated' => $valor->last_updated
             ];
         }
