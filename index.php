@@ -15,11 +15,20 @@ Flight::route('POST /funcionario/@id', array($funcionarios, 'updateDadosFunciona
 
 //Endpoints que inserem dados
 Flight::route('POST /novo-funcionario', array($funcionarios, 'novoFuncionario'));
+Flight::route('POST /funcionario/upload/@id', array($funcionarios, 'uploadImagem'));
 
 
-//Mapeando rota vazias.
+//Mapeando o diretório da pasta Views
+Flight::set('flight.views.path', './src/views');
+
+//Página sem rota definida
 Flight::map('notFound', function(){
-    echo '<h1>Rota sem conteúdo</h1>';
+    Flight::render('404');
 });
+
+Flight::route('GET /funcionario/upload', function(){
+    Flight::render('upload');
+});
+
 
 Flight::start();

@@ -13,7 +13,7 @@ class FuncionariosController {
                 'id_registro' => $valor->id_registro,
                 'nome' =>$valor->nome,
                 'email' => $valor->email,
-                'telefone' => $valor->telefone,
+                'telefone' => unserialize($valor->telefone),
                 'last_updated' => $valor->last_updated
             ];
         }
@@ -77,17 +77,87 @@ class FuncionariosController {
     }
 
 
+    public function validaFuncionario($idFuncionario){
+        $temFuncionario = Funcionarios::getOne(['id_registro' => $idFuncionario]);
+
+        if(empty($temFuncionario)){
+            throw new AppException('Exception: Funcionário não existe no banco de dados.');
+        }
+    }
+
+    public function validaImagem($request){
+        if(empty($request)) throw new AppException('Exception: Arquivo não pode ser vazio.');
+
+        $formato = $request['avatar']['type'];
+        $formatoPermitido = array('image/jpeg', 'image/png');
+
+        if(!in_array($formato, $formatoPermitido)) {
+            return Flight::json(array('status' => 'formato_nao_permitido'));
+        }
+    }
+
+
+    public function uploadImagem($idFuncionario) {
+        $this->validaImagem($_FILES);
+
+        $this->validaFuncionario($idFuncionario);
+
+        $temAvatar = Avatar::getOne(['id_funcionario' => $idFuncionario]);
+
+        if($temAvatar){
+            $this->atualizarAvatar($temAvatar->id_registro, $idFuncionario, $_FILES, $temAvatar->url);
+        } else {
+            $this->salvarAvatar($idFuncionario, $_FILES);
+        }
+
+        return Flight::json(array('avatar_updated' => $idFuncionario));
+        
+    }
+
+
+    public function atualizarAvatar($id_registro, $idFuncionario, $file, $fileAntigo){
+        $name = md5($file['avatar']['name'].time().rand(0,999)).'.jpg';
+
+        unlink(ASSETS.'/funcionario_avatar/'.$fileAntigo);
+
+        $avatar = new Avatar([
+            'id_registro' => $id_registro,
+            'id_funcionario' => $idFuncionario,
+            'url' => $name
+        ]);
+
+        move_uploaded_file($file['avatar']['tmp_name'], ASSETS.'/funcionario_avatar/'.$name);
+
+        $avatar->update();
+    }
+
+
+    public function salvarAvatar($idFuncionario, $file){
+        $name = md5($file['avatar']['name'].time().rand(0,999)).'.jpg';
+
+        $avatar = new Avatar([
+            'id_funcionario' => $idFuncionario,
+            'url' => $name
+        ]);
+
+        move_uploaded_file($file['avatar']['tmp_name'], ASSETS.'/funcionario_avatar/'.$name);
+
+        $avatar->insert();
+    }
+
+
     public function salvarTelefone($idFuncionario, $telefone) {
         if(empty($idFuncionario)) throw new AppException('Exception: ID de funcionário não pode ser vazio.');
         if(empty($telefone)) throw new AppException('Exception: Telefone do funcionário não pode ser vazio.');
 
         $temTelefone = Telefone::getOne(['id_funcionario' => $idFuncionario]);
 
+
         if(!empty($temTelefone)) {
             $temTelefone = new Telefone([
                 'id_registro' => $temTelefone->id_registro,
                 'id_funcionario' => $idFuncionario,
-                'telefone' => $telefone,
+                'telefone' => serialize($telefone),
                 'last_updated' => date('Y-m-d H:i:s')
             ]);
     
@@ -95,7 +165,7 @@ class FuncionariosController {
         } else {
             $temTelefone = new Telefone([
                 'id_funcionario' => $idFuncionario,
-                'telefone' => $telefone,
+                'telefone' => serialize($telefone),
                 'last_updated' => date('Y-m-d H:i:s')
             ]);
     
