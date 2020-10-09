@@ -6,10 +6,13 @@ Faça o clone do projeto
 Na pasta src, renomeio o arquivo env.sample.ini para env.ini
 
 No arquivo env.ini inclua as seguintes instruções:
-host = "localhost"
-username = "seu usuario"
-password = "sua senha"
-database = "crud_vikings"
+>host = "localhost"
+>
+>username = "seu usuario"
+>
+>password = "sua senha"
+>
+>database = "crud_vikings"
 
 Crie a tabela "crud_vikings"
 
