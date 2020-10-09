@@ -38,9 +38,5 @@ Flight::route('GET /funcionario/editar/@id', function(){
     Flight::render('funcionarioEditar');
 });
 
-Flight::route('GET /funcionario/upload', function(){
-    Flight::render('upload');
-});
-
 
 Flight::start();

@@ -27,12 +27,14 @@ class FuncionariosController {
         if(!$result) return Flight::json(array('funcionario' => []));
 
         $telefone = $this->getTelefoneFuncionario($idFuncionario);
+        $avatar = $this->getAvatar($idFuncionario);
 
         $dados = [
             'id_registro' => $result->id_registro,
             'nome' =>$result->nome,
             'email' => $result->email,
             'telefone' => unserialize($telefone),
+            'avatar' => $avatar,
             'last_updated' => $result->last_updated
         ];
         return Flight::json(array('funcionario' => $dados));
@@ -43,6 +45,13 @@ class FuncionariosController {
         $telefone =  Telefone::getOne(['id_funcionario' => $idFuncionario]);
 
         return $telefone->telefone ?? null;
+    }
+
+
+    public function getAvatar($idFuncionario) {
+        $avatar =  Avatar::getOne(['id_funcionario' => $idFuncionario]);
+
+        return $avatar->url ?? null;
     }
 
 
@@ -120,7 +129,7 @@ class FuncionariosController {
         $formatoPermitido = array('image/jpeg', 'image/png');
 
         if(!in_array($formato, $formatoPermitido)) {
-            return Flight::json(array('status' => 'formato_nao_permitido'));
+            throw new AppException('Formato de imagem não permitido');
         }
     }
 
@@ -138,7 +147,7 @@ class FuncionariosController {
             $this->salvarAvatar($idFuncionario, $_FILES);
         }
 
-        return Flight::json(array('avatar_updated' => $idFuncionario));
+        return Flight::redirect("/funcionario/editar/{$idFuncionario}");
         
     }
 

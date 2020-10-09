@@ -17,41 +17,47 @@
         <div id="formulario">
             <div class="modal-dialog">
                 <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Área de Cadastro</h5>
-                </div>
-                <div class="modal-body">
-                <form>
-                    <div class="form-group row">
-                        <label for="nome" class="col-sm-2 col-form-label">Nome</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="nome" :value="nome"
-                            placeholder="Digite seu nome" required>
+                    <div class="modal-header" style="display: flex;justify-content: flex-end;">
+                        <div class="col-md-5">
+                            <img v-if="avatar" :src="avatar" class="card-img" alt="avatar">
+                            <form method="POST" :action="urlActionAvatar" enctype="multipart/form-data">
+                                <input type="file" name="avatar" title="Atualizar foto" class="form-control" style="cursor:pointer">
+                                <button type="submit" class="btn btn-info btn-block mt-2">Salvar</button>
+                            </form>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="email" class="col-sm-2 col-form-label">Email</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control email" id="email" :value="email"
-                            placeholder="Digite seu Email" required>
-                        </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group row">
+                                <label for="nome" class="col-sm-2 col-form-label">Nome</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="nome" :value="nome"
+                                    placeholder="Digite seu nome" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="email" class="col-sm-2 col-form-label">Email</label>
+                                <div class="col-sm-10">
+                                    <input type="email" class="form-control email" id="email" :value="email"
+                                    placeholder="Digite seu Email" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="contato" class="col-sm-2 col-form-label">Telefone</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control telefone"
+                                        :value="telefone"
+                                        id="telefone" placeholder="Para mais de um número, separe por vírgula." required>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group row">
-                        <label for="contato" class="col-sm-2 col-form-label">Telefone</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control telefone"
-                                :value="telefone"
-                                id="telefone" placeholder="Para mais de um número, separe por vírgula." required>
-                        </div>
+                    <div class="modal-footer" style="justify-content: space-between;">
+                        <a href="/" class="btn btn-danger">
+                            Voltar
+                        </a>
+                        <button type="button" class="btn btn-primary" @click="atualizarFuncionario()">Atualizar</button>
                     </div>
-                </form>
-                </div>
-                <div class="modal-footer" style="justify-content: space-between;">
-                    <a href="/" class="btn btn-danger">
-                        Voltar
-                    </a>
-                    <button type="button" class="btn btn-primary" @click="atualizarFuncionario()">Salvar</button>
-                </div>
                 </div>
             </div>
         </div>
@@ -73,16 +79,18 @@
         var app = new Vue({
             el: '#app',
             data: {
-                titulo: 'Atualização de dados',
+                titulo: 'Informações do Funcionário',
                 nome: '',
                 email: '',
                 telefone: '',
-                id: 0
+                id: 0,
+                avatar: '/src/assets/funcionario_avatar/',
+                urlActionAvatar: '/funcionario/upload/'
             },
 
 
             mounted() {
-                this.getFuncionario() 
+                this.getFuncionario()
             },
 
             methods: {
@@ -94,10 +102,12 @@
 
                     axios.get(`/funcionario/${result[1]}`)
                     .then((resp) => {
-                        this.id = resp.data.funcionario.id_registro
-                        this.nome = resp.data.funcionario.nome
-                        this.email = resp.data.funcionario.email
+                        this.id = resp.data.funcionario.id_registro || 0
+                        this.nome = resp.data.funcionario.nome || ''
+                        this.email = resp.data.funcionario.email || ''
                         this.telefone = resp.data.funcionario.telefone || ''
+                        this.avatar += resp.data.funcionario.avatar || '0.png'
+                        this.urlActionAvatar += resp.data.funcionario.id_registro
                     })
 
                 },
