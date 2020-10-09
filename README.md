@@ -20,7 +20,9 @@ Crie a tabela "crud_vikings"
 
 Importe as tabelas usando os arquivos sql dentro da pasta /extras/tabelas
 
-O servidor usado nessa aplicação é um apache
+O Servidor HTTP usado nessa aplicação é um apache
 
-Rode a aplicação no seu servidor local.
+Rode a aplicação no seu servidor local e no browser abra algo como:
+
+>http://localhost:8080 ou na porta que escolher
 
