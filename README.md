@@ -1,6 +1,6 @@
 # Crud Vikings
 
-Fáca o clone do projeto
+Faça o clone do projeto
 > git clone https://github.com/romarioarruda/crud-vikings.git
 
 Na pasta src, renomeio o arquivo env.sample.ini para env.ini
