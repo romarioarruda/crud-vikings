@@ -18,12 +18,19 @@ Flight::route('POST /novo-funcionario', array($funcionarios, 'novoFuncionario'))
 Flight::route('POST /funcionario/upload/@id', array($funcionarios, 'uploadImagem'));
 
 
+
 //Mapeando o diretório da pasta Views
 Flight::set('flight.views.path', './src/views');
 
 //Página sem rota definida
 Flight::map('notFound', function(){
     Flight::render('404');
+});
+
+
+//Requests de views
+Flight::route('GET /', function(){
+    Flight::render('funcionarios');
 });
 
 Flight::route('GET /funcionario/upload', function(){

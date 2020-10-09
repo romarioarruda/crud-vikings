@@ -72,6 +72,9 @@ class FuncionariosController {
         if(empty($temFuncionario)) throw new AppException('Exception: Funcionário não existe no banco de dados.');
 
         $temFuncionario->delete(['id_registro' => $id]);
+
+        $this->deleteTelefone($id);
+        $this->deleteAvatar($id);
         
         return Flight::json(array('funcionario_deleted' => $id));
     }
@@ -152,7 +155,6 @@ class FuncionariosController {
 
         $temTelefone = Telefone::getOne(['id_funcionario' => $idFuncionario]);
 
-
         if(!empty($temTelefone)) {
             $temTelefone = new Telefone([
                 'id_registro' => $temTelefone->id_registro,
@@ -172,6 +174,24 @@ class FuncionariosController {
             $temTelefone->insert();
         }
 
+    }
+
+
+    public function deleteTelefone($idFuncionario){
+        $temTelefone = Telefone::getOne(['id_funcionario' => $idFuncionario]);
+
+        $temTelefone->delete(['id_registro' => $temTelefone->id_registro]);
+    }
+
+
+    public function deleteAvatar($idFuncionario){
+        $temImagem = Avatar::getOne(['id_funcionario' => $idFuncionario]);
+
+        if($temImagem) {
+            $temImagem->delete(['id_registro' => $temImagem->id_registro]);
+
+            unlink(ASSETS.'/funcionario_avatar/'.$temImagem->url);
+        }
     }
 
 }
