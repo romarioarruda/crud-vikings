@@ -11,7 +11,7 @@ class Funcionarios extends Model {
     public static function getAllJoin() {
         $objects = [];
         $sql = "SELECT func.id_registro, func.nome, func.email, contato.telefone, func.last_updated 
-        FROM funcionarios as func INNER JOIN telefone as contato 
+        FROM funcionarios as func LEFT JOIN telefone as contato 
         ON func.id_registro = contato.id_funcionario";
 
         $result = Database::getResultFromQuery($sql);

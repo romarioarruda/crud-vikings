@@ -6,6 +6,7 @@ $funcionarios = new FuncionariosController;
 
 //Endpoints que pegam dados
 Flight::route('GET /funcionarios', array($funcionarios, 'getAll'));
+Flight::route('GET /funcionario/@id', array($funcionarios, 'getOne'));
 
 //Endpoints que deletam dados
 Flight::route('DELETE /funcionario/@id', array($funcionarios, 'deleteDadosFuncionario'));
@@ -31,6 +32,10 @@ Flight::map('notFound', function(){
 //Requests de views
 Flight::route('GET /', function(){
     Flight::render('funcionarios');
+});
+
+Flight::route('GET /funcionario/editar/@id', function(){
+    Flight::render('funcionarioEditar');
 });
 
 Flight::route('GET /funcionario/upload', function(){

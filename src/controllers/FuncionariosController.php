@@ -13,11 +13,36 @@ class FuncionariosController {
                 'id_registro' => $valor->id_registro,
                 'nome' =>$valor->nome,
                 'email' => $valor->email,
-                'telefone' => unserialize($valor->telefone),
+                'telefone' => ($valor->telefone) ? unserialize($valor->telefone) : null,
                 'last_updated' => $valor->last_updated
             ];
         }
         return Flight::json(array('funcionarios' => $dados));
+    }
+
+
+    public function getOne($idFuncionario) {
+        $result =  Funcionarios::getOne(['id_registro' => $idFuncionario]);
+
+        if(!$result) return Flight::json(array('funcionario' => []));
+
+        $telefone = $this->getTelefoneFuncionario($idFuncionario);
+
+        $dados = [
+            'id_registro' => $result->id_registro,
+            'nome' =>$result->nome,
+            'email' => $result->email,
+            'telefone' => unserialize($telefone),
+            'last_updated' => $result->last_updated
+        ];
+        return Flight::json(array('funcionario' => $dados));
+    }
+
+
+    public function getTelefoneFuncionario($idFuncionario) {
+        $telefone =  Telefone::getOne(['id_funcionario' => $idFuncionario]);
+
+        return $telefone->telefone ?? null;
     }
 
 
