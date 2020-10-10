@@ -6,37 +6,40 @@ class FuncionariosController {
         $result =  Funcionarios::getAllJoin();
         $dados  = [];
 
-        if(!$result) return Flight::json(array('funcionarios' => $dados));
-        
-        foreach($result as $chave => $valor) {
-            $dados[] = [
-                'id_registro' => $valor->id_registro,
-                'nome' =>$valor->nome,
-                'email' => $valor->email,
-                'telefone' => ($valor->telefone) ? unserialize($valor->telefone) : null,
-                'last_updated' => $valor->last_updated
-            ];
+        if($result) {
+            foreach($result as $chave => $valor) {
+                $dados[] = [
+                    'id_registro' => $valor->id_registro,
+                    'nome' =>$valor->nome,
+                    'email' => $valor->email,
+                    'telefone' => ($valor->telefone) ? unserialize($valor->telefone) : null,
+                    'last_updated' => $valor->last_updated
+                ];
+            }
         }
+        
         return Flight::json(array('funcionarios' => $dados));
     }
 
 
     public function getOne($idFuncionario) {
         $result =  Funcionarios::getOne(['id_registro' => $idFuncionario]);
+        $dados = [];
 
-        if(!$result) return Flight::json(array('funcionario' => []));
+        if($result){
+            $telefone = $this->getTelefoneFuncionario($idFuncionario);
+            $avatar = $this->getAvatar($idFuncionario);
 
-        $telefone = $this->getTelefoneFuncionario($idFuncionario);
-        $avatar = $this->getAvatar($idFuncionario);
-
-        $dados = [
-            'id_registro' => $result->id_registro,
-            'nome' =>$result->nome,
-            'email' => $result->email,
-            'telefone' => unserialize($telefone),
-            'avatar' => $avatar,
-            'last_updated' => $result->last_updated
-        ];
+            $dados = [
+                'id_registro' => $result->id_registro,
+                'nome' =>$result->nome,
+                'email' => $result->email,
+                'telefone' => unserialize($telefone),
+                'avatar' => $avatar,
+                'last_updated' => $result->last_updated
+            ];
+        }
+        
         return Flight::json(array('funcionario' => $dados));
     }
 
@@ -80,9 +83,7 @@ class FuncionariosController {
     public function updateDadosFuncionario($id) {
         $request = Flight::request()->data;
 
-        $temFuncionario = Funcionarios::getOne(['id_registro' => $id]);
-
-        if(empty($temFuncionario)) throw new AppException('Exception: Funcionário não existe no banco de dados.');
+        $this->validaFuncionario($id);
 
         $funcionario = new Funcionarios([
             'id_registro' => $id,
@@ -101,9 +102,7 @@ class FuncionariosController {
 
 
     public function deleteDadosFuncionario($id){
-        $temFuncionario = Funcionarios::getOne(['id_registro' => $id]);
-
-        if(empty($temFuncionario)) throw new AppException('Exception: Funcionário não existe no banco de dados.');
+        $temFuncionario = $this->validaFuncionario($id, true);
 
         $temFuncionario->delete(['id_registro' => $id]);
 
@@ -114,12 +113,14 @@ class FuncionariosController {
     }
 
 
-    public function validaFuncionario($idFuncionario){
+    public function validaFuncionario($idFuncionario, $retornaObjeto = false){
         $temFuncionario = Funcionarios::getOne(['id_registro' => $idFuncionario]);
 
         if(empty($temFuncionario)){
             throw new AppException('Exception: Funcionário não existe no banco de dados.');
         }
+
+        if($retornaObjeto) return $temFuncionario;
     }
 
     public function validaImagem($request){
@@ -184,8 +185,9 @@ class FuncionariosController {
 
 
     public function salvarTelefone($idFuncionario, $telefone) {
-        if(empty($idFuncionario)) throw new AppException('Exception: ID de funcionário não pode ser vazio.');
-        if(empty($telefone)) throw new AppException('Exception: Telefone do funcionário não pode ser vazio.');
+        $this->validaIDNaRequisicao($idFuncionario);
+
+        $this->validaTelefone($telefone);
 
         $temTelefone = Telefone::getOne(['id_funcionario' => $idFuncionario]);
 
@@ -208,6 +210,20 @@ class FuncionariosController {
             $temTelefone->insert();
         }
 
+    }
+
+
+    public function validaTelefone($telefone) {
+        if(empty($telefone)) {
+            throw new AppException('Exception: Telefone do funcionário não pode ser vazio.');
+        }
+    }
+
+
+    public function validaIDNaRequisicao($id) {
+        if(empty($id)) {
+            throw new AppException('Exception: ID não pode ser vazio.');
+        }
     }
 
 
