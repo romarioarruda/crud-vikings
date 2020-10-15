@@ -1,6 +1,6 @@
 # Crud MVC
 
-Ambiente de desenvolvimento usando Docker Compose.
+Ambiente de desenvolvimento usando `Docker Compose`.
 >
 Stack:
 
@@ -11,7 +11,7 @@ Stack:
 
 ## Instalação
 
-Com o Docker instalado na sua máquina
+Com o `Docker` instalado na sua máquina
 
 Faça o clone desse repositório e execute `docker-compose up -d`.
 
@@ -24,6 +24,11 @@ docker-compose up -d
 ```
 
 Seu ambiente está pronto!! Acesse http://localhost:8081 no seu navegador.
+
+## Tabelas do banco de dados
+Por padrão, o banco `crud_vikings` foi criado, agora é necessário importar as tabelas dentro do banco.
+
+Na pasta `extras/tabelas` estão as tabelas necessárias pra aplicação.
 
 ## Configuração
 
@@ -89,5 +94,5 @@ Por padrão, os seguintes módulos estarão habilitados:
 O phpMyAdmin está configurado para usar a porta `8080`, com as credenciais:
 
 http://localhost:8080
-username: root
-password: /br4vu5_root/is
+username: `root`
+password: `/br4vu5_root/is`
