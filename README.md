@@ -1,28 +1,93 @@
-# Crud Vikings
+# Crud MVC
 
-Faça o clone do projeto
-> git clone https://github.com/romarioarruda/crud-vikings.git
-
-Na pasta src, renomeio o arquivo env.sample.ini para env.ini
-
-No arquivo env.ini inclua as seguintes instruções:
->host = "localhost"
+Ambiente de desenvolvimento usando Docker Compose.
 >
->username = "seu usuario"
->
->password = "sua senha"
->
->database = "crud_vikings"
+Stack:
 
-Crie a tabela "crud_vikings"
+* PHP 7.4
+* Apache 2.4
+* Mysql 8.0
+* phpMyAdmin
 
-> create database crud_vikings
+## Instalação
 
-Importe as tabelas usando os arquivos sql dentro da pasta /extras/tabelas
+Com o Docker instalado na sua máquina
 
-O Servidor HTTP usado nessa aplicação é um apache
+Faça o clone desse repositório e execute `docker-compose up -d`.
 
-Rode a aplicação no seu servidor local e no browser abra algo como:
+```shell
+git clone https://github.com/romarioarruda/crud-vikings.git
 
->http://localhost:8080 ou na porta que escolher
+cd crud-vikings/
 
+docker-compose up -d
+```
+
+Seu ambiente está pronto!! Acesse http://localhost:8081 no seu navegador.
+
+## Configuração
+
+_**DOCUMENT_ROOT**_
+
+É o diretório que o Apache vai servir, nesse caso é a pasta raiz `crud-vikings`.
+
+## Web Server
+
+O Apache está configurado para usar a porta `8081`. você pode acessar http://localhost:8081.
+
+#### Módulos do Apache
+
+Por padrão, os seguintes módulos estão habilitados:
+
+* rewrite
+* headers
+
+## Database
+
+Esse stack vem com as seguintes credenciais:
+
+_**SENHA DO ROOT**_
+
+/br4vu5_root/is
+
+_**BANCO**_
+
+crud_vikings
+
+_**USUÁRIO**_
+
+devuser
+
+_**SENHA DO USUÁRIO**_
+
+devpass
+
+## PHP
+
+A versão do PHP utilizada nessa stack é a `7.4`
+
+#### Extensões do PHP
+
+Por padrão, os seguintes módulos estarão habilitados:
+
+* mysqli
+* pdo_sqlite
+* pdo_mysql
+* mbstring
+* zip
+* intl
+* mcrypt
+* curl
+* json
+* iconv
+* xml
+* xmlrpc
+* gd
+
+## phpMyAdmin
+
+O phpMyAdmin está configurado para usar a porta `8080`, com as credenciais:
+
+http://localhost:8080
+username: root
+password: /br4vu5_root/is

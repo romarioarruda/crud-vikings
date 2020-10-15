@@ -29,11 +29,13 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="funcioario in arrayFuncionarios">
+                <tr v-for="funcioario in arrayFuncionarios" :key="funcioario.id_registro">
                     <th scope="row">{{funcioario.id_registro}}</th>
                     <td>{{funcioario.nome}}</td>
                     <td>{{funcioario.email}}</td>
-                    <td v-if="funcioario.telefone">{{funcioario.telefone}}</td>
+                    <td v-if="funcioario.telefone">
+                        <a href="#" @click="addTelefoneModal(funcioario.telefone)" data-toggle="modal" data-target="#modalTelefone">Visualizar telefones</a>
+                    </td>
                     <td v-else>Sem telefone cadastrado</td>
                     <td>
                         <button class="btn btn-danger btn-sm" @click="deletar(funcioario.id_registro)">Deletar</button>
@@ -46,45 +48,66 @@
         <div v-else class="alert alert-danger">Sem funcionários cadastrados</div>
 
 
+        <!-- Modal telefones -->
+        <div class="modal" id="modalTelefone" tabindex="-1">
+            <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Telefones cadastrados</h5>
+                            <button type="button" class="close" 
+                                data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="list-group" v-for="telefone in telefoneModal" :key="telefone">
+                                <li class="list-group-item">{{ telefone }}</li>
+                            </ul>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        <!-- Fim modal telefone -->
+
         <!-- Modal add funcionario -->
         <div class="modal" id="modalAdd" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Área de Cadastro</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                <form>
-                    <div class="form-group row">
-                        <label for="nome" class="col-sm-2 col-form-label">Nome</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="nome"
-                            placeholder="Digite seu nome" required>
-                        </div>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Área de Cadastro</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <div class="form-group row">
-                        <label for="email" class="col-sm-2 col-form-label">Email</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control email" id="email"
-                            placeholder="Digite seu Email" required>
-                        </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group row">
+                                <label for="nome" class="col-sm-2 col-form-label">Nome</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="nome"
+                                    placeholder="Digite seu nome" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="email" class="col-sm-2 col-form-label">Email</label>
+                                <div class="col-sm-10">
+                                    <input type="email" class="form-control email" id="email"
+                                    placeholder="Digite seu Email" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="contato" class="col-sm-2 col-form-label">Telefone</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control telefone"
+                                        id="telefone" placeholder="Para mais de um número, separe por vírgula." required>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group row">
-                        <label for="contato" class="col-sm-2 col-form-label">Telefone</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control telefone"
-                                id="telefone" placeholder="Para mais de um número, separe por vírgula." required>
-                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-primary" @click="salvarFuncionario()">Salvar</button>
                     </div>
-                </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary" @click="salvarFuncionario()">Salvar</button>
-                </div>
                 </div>
             </div>
         </div>
@@ -108,7 +131,8 @@
             el: '#app',
             data: {
                 message: 'Lista dos funcionários',
-                arrayFuncionarios: []
+                arrayFuncionarios: [],
+                telefoneModal: []
             },
 
 
@@ -156,6 +180,15 @@
 
                 linkEditar(url) {
                     window.location.href = `funcionario/editar/${url}`
+                },
+
+                addTelefoneModal(arrayTelefone) {
+                    this.limpaTelefoneModal()
+                    this.telefoneModal = arrayTelefone
+                },
+
+                limpaTelefoneModal() {
+                    this.telefoneModal = []
                 }
             }
         })
