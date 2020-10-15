@@ -49,23 +49,23 @@ Por padrão, os seguintes módulos estão habilitados:
 
 ## Database
 
-Esse stack vem com as seguintes credenciais:
+Essa stack vem com as seguintes credenciais:
 
 _**SENHA DO ROOT**_
 
-/br4vu5_root/is
+`/br4vu5_root/is`
 
 _**BANCO**_
 
-crud_vikings
+`crud_vikings`
 
 _**USUÁRIO**_
 
-devuser
+`devuser`
 
 _**SENHA DO USUÁRIO**_
 
-devpass
+`devpass`
 
 ## PHP
 
