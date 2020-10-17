@@ -66,8 +66,8 @@ class FuncionariosController {
         if(empty($request->telefone)) return false;
 
         $funcionario = new Funcionarios([
-            'nome' => $request->nome,
-            'email' => $request->email,
+            'nome' => filter_var($request->nome, FILTER_SANITIZE_SPECIAL_CHARS),
+            'email' => filter_var($request->email, FILTER_SANITIZE_EMAIL),
             'last_updated' => date('Y-m-d H:i:s')
         ]);
 
@@ -87,8 +87,8 @@ class FuncionariosController {
 
         $funcionario = new Funcionarios([
             'id_registro' => $id,
-            'nome' => $request->nome,
-            'email' => $request->email,
+            'nome' => filter_var($request->nome, FILTER_SANITIZE_SPECIAL_CHARS),
+            'email' => filter_var($request->email, FILTER_SANITIZE_EMAIL),
             'last_updated' => date('Y-m-d H:i:s')
         ]);
 
@@ -214,7 +214,7 @@ class FuncionariosController {
 
 
     public function validaTelefone($telefone) {
-        if(empty($telefone)) {
+        if(!is_array($telefone) && empty(trim($telefone[0]))) {
             throw new AppException('Exception: Telefone do funcionário não pode ser vazio.');
         }
     }

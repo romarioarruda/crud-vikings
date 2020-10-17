@@ -16,6 +16,9 @@
         <h2 class="mb-5 mt-3 text-center">{{ titulo }}</h2>
         <div id="formulario">
             <div class="modal-dialog">
+                <?php if(isset($_GET['img']) && $_GET['img'] == 'empty'): ?>
+                    <div class="alert alert-danger">Imagem de perfil não preenchida.</div>
+                <?php endif; ?>
                 <div class="modal-content">
                     <div class="modal-header" style="display: flex;justify-content: flex-end;">
                         <div class="col-md-5">
