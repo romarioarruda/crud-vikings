@@ -14,7 +14,7 @@
 <body>
     <main id="app" class="container">
         <h2 class="mb-5 mt-3 text-center">{{ titulo }}</h2>
-        <div id="formulario">
+        <div id="formulario" v-if="id">
             <div class="modal-dialog">
                 <div v-if="postInvalid" class="alert alert-danger">Dados não validados</div>
                 <div class="modal-content">
@@ -62,6 +62,7 @@
                 </div>
             </div>
         </div>
+        <div v-else class="alert alert-danger">Funcionário inexistente.</div>
     </main>
 
     <!-- Usando jquery só por causa do bootstrap -->
