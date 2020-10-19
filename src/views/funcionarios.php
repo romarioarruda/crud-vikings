@@ -72,6 +72,7 @@
         <!-- Modal add funcionario -->
         <div class="modal" id="modalAdd" tabindex="-1">
             <div class="modal-dialog">
+                <div v-if="postInvalid" class="alert alert-danger">Dados não validados</div>
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Área de Cadastro</h5>
@@ -132,7 +133,8 @@
             data: {
                 message: 'Lista dos funcionários',
                 arrayFuncionarios: [],
-                telefoneModal: []
+                telefoneModal: [],
+                postInvalid: false
             },
 
 
@@ -165,7 +167,11 @@
                             telefone: arrayTelefone[0]
                         })
                         .then((resp) => {
-                            window.location.href = window.location.href
+                            if(resp.data.funcionario_created){
+                                window.location.href = window.location.href
+                            } else {
+                                this.postInvalid = true
+                            }
                         })
                     }
                 },

@@ -16,9 +16,7 @@
         <h2 class="mb-5 mt-3 text-center">{{ titulo }}</h2>
         <div id="formulario">
             <div class="modal-dialog">
-                <?php if(isset($_GET['img']) && $_GET['img'] == 'empty'): ?>
-                    <div class="alert alert-danger">Imagem de perfil não preenchida.</div>
-                <?php endif; ?>
+                <div v-if="postInvalid" class="alert alert-danger">Dados não validados</div>
                 <div class="modal-content">
                     <div class="modal-header" style="display: flex;justify-content: flex-end;">
                         <div class="col-md-5">
@@ -88,7 +86,8 @@
                 telefone: '',
                 id: 0,
                 avatar: '/src/assets/funcionario_avatar/',
-                urlActionAvatar: '/funcionario/upload/'
+                urlActionAvatar: '/funcionario/upload/',
+                postInvalid: false
             },
 
 
@@ -132,7 +131,11 @@
                             telefone: arrayTelefone[0]
                         })
                         .then((resp) => {
-                            window.location.href = window.location.href
+                            if(resp.data.funcionario_updated){
+                                window.location.href = window.location.href
+                            } else {
+                                this.postInvalid = true
+                            }
                         })
                     }
                 }

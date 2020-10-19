@@ -60,43 +60,60 @@ class FuncionariosController {
 
     public function novoFuncionario() {
         $request = Flight::request()->data;
+        $status  = 0;
 
-        if(empty($request->nome)) return false;
-        if(empty($request->email)) return false;
-        if(empty($request->telefone)) return false;
+        if($this->validaDadosDoInputDoUsuario($request)){
+            $funcionario = new Funcionarios([
+                'nome' => filter_var(addslashes($request->nome), FILTER_SANITIZE_SPECIAL_CHARS),
+                'email' => filter_var($request->email, FILTER_VALIDATE_EMAIL),
+                'last_updated' => date('Y-m-d H:i:s')
+            ]);
+    
+            $funcionario->insert();
+    
+            $this->salvarTelefone($funcionario->id_registro, $request->telefone);
 
-        $funcionario = new Funcionarios([
-            'nome' => filter_var($request->nome, FILTER_SANITIZE_SPECIAL_CHARS),
-            'email' => filter_var($request->email, FILTER_SANITIZE_EMAIL),
-            'last_updated' => date('Y-m-d H:i:s')
-        ]);
+            $status = $funcionario->id_registro;
+        }
+        
 
-        $funcionario->insert();
+        return Flight::json(array('funcionario_created' => $status));
 
-        $this->salvarTelefone($funcionario->id_registro, $request->telefone);
+    }
 
-        return Flight::json(array('funcionario_created' => $funcionario->id_registro));
 
+    public function validaDadosDoInputDoUsuario(...$dados) {
+        if(empty($dados[0]->nome)) return false;
+        foreach($dados[0]->telefone as $key => $telefone){
+            if(empty($dados[0]->telefone[$key]) || strlen($dados[0]->telefone[$key]) <= 5) return false;
+        }
+        if(!filter_var($dados[0]->email, FILTER_VALIDATE_EMAIL)) return false;
+        return true;
     }
 
 
     public function updateDadosFuncionario($id) {
         $request = Flight::request()->data;
+        $status  = 0;
 
         $this->validaFuncionario($id);
 
-        $funcionario = new Funcionarios([
-            'id_registro' => $id,
-            'nome' => filter_var($request->nome, FILTER_SANITIZE_SPECIAL_CHARS),
-            'email' => filter_var($request->email, FILTER_SANITIZE_EMAIL),
-            'last_updated' => date('Y-m-d H:i:s')
-        ]);
+        if($this->validaDadosDoInputDoUsuario($request)){
+            $funcionario = new Funcionarios([
+                'id_registro' => $id,
+                'nome' => filter_var(addslashes($request->nome), FILTER_SANITIZE_SPECIAL_CHARS),
+                'email' => filter_var($request->email, FILTER_VALIDATE_EMAIL),
+                'last_updated' => date('Y-m-d H:i:s')
+            ]);
 
-        $funcionario->update();
+            $funcionario->update();
 
-        $this->salvarTelefone($id, $request->telefone);
+            $this->salvarTelefone($id, $request->telefone);
 
-        return Flight::json(array('funcionario_updated' => $id));
+            $status = $funcionario->id_registro;
+        }
+
+        return Flight::json(array('funcionario_updated' => $status));
 
     }
 
@@ -215,7 +232,7 @@ class FuncionariosController {
 
     public function validaTelefone($telefone) {
         if(!is_array($telefone) && empty(trim($telefone[0]))) {
-            throw new AppException('Exception: Telefone do funcionário não pode ser vazio.');
+            throw new AppException('Telefone não validado.');
         }
     }
 
@@ -230,7 +247,9 @@ class FuncionariosController {
     public function deleteTelefone($idFuncionario){
         $temTelefone = Telefone::getOne(['id_funcionario' => $idFuncionario]);
 
-        $temTelefone->delete(['id_registro' => $temTelefone->id_registro]);
+        if($temTelefone){
+            $temTelefone->delete(['id_registro' => $temTelefone->id_registro]);
+        }
     }
 
 
