@@ -23,21 +23,25 @@ class FuncionariosController {
 
 
     public function getOne($idFuncionario) {
-        $result =  Funcionarios::getOne(['id_registro' => $idFuncionario]);
         $dados = [];
+        $idFuncionario = filter_var($idFuncionario, FILTER_VALIDATE_INT);
 
-        if($result){
-            $telefone = $this->getTelefoneFuncionario($idFuncionario);
-            $avatar = $this->getAvatar($idFuncionario);
+        if($idFuncionario) {
+            $result =  Funcionarios::getOne(['id_registro' => $idFuncionario]);
 
-            $dados = [
-                'id_registro' => $result->id_registro,
-                'nome' =>$result->nome,
-                'email' => $result->email,
-                'telefone' => unserialize($telefone),
-                'avatar' => $avatar,
-                'last_updated' => $result->last_updated
-            ];
+            if($result){
+                $telefone = $this->getTelefoneFuncionario($idFuncionario);
+                $avatar = $this->getAvatar($idFuncionario);
+
+                $dados = [
+                    'id_registro' => $result->id_registro,
+                    'nome' =>$result->nome,
+                    'email' => $result->email,
+                    'telefone' => unserialize($telefone),
+                    'avatar' => $avatar,
+                    'last_updated' => $result->last_updated
+                ];
+            }
         }
         
         return Flight::json(array('funcionario' => $dados));
