@@ -25,17 +25,17 @@ Flight::set('flight.views.path', './src/views');
 
 //Página sem rota definida
 Flight::map('notFound', function(){
-    Flight::render('404');
+    Flight::render('404.html');
 });
 
 
 //Requests de views
 Flight::route('GET /', function(){
-    Flight::render('funcionarios');
+    Flight::render('funcionarios.html');
 });
 
 Flight::route('GET /funcionario/editar/@id', function(){
-    Flight::render('funcionarioEditar');
+    Flight::render('funcionarioEditar.html');
 });
 
 

@@ -160,6 +160,10 @@ class View {
     public function getTemplate($file) {
         $ext = $this->extension;
 
+        if(preg_match("#.html#is", $file, $extManual)){
+            $ext = $extManual[0];
+        }
+
         if (!empty($ext) && (substr($file, -1 * strlen($ext)) != $ext)) {
             $file .= $ext;
         }
@@ -167,7 +171,7 @@ class View {
         if ((substr($file, 0, 1) == '/')) {
             return $file;
         }
-        
+
         return $this->path.'/'.$file;
     }
 
