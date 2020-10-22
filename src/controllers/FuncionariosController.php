@@ -3,8 +3,8 @@
 class FuncionariosController {
 
     public function getAll(){
-        $result =  Funcionarios::getAllJoin();
         $dados  = [];
+        $result =  Funcionarios::getAllJoin();
 
         if($result) {
             foreach($result as $chave => $valor) {
@@ -24,9 +24,8 @@ class FuncionariosController {
 
     public function getOne($idFuncionario) {
         $dados = [];
-        $idFuncionario = filter_var($idFuncionario, FILTER_VALIDATE_INT);
 
-        if($idFuncionario) {
+        if($idFuncionario = filter_var($idFuncionario, FILTER_VALIDATE_INT)) {
             $result =  Funcionarios::getOne(['id_registro' => $idFuncionario]);
 
             if($result){
@@ -68,7 +67,7 @@ class FuncionariosController {
 
         if($this->validaDadosDoInputDoUsuario($request)){
             $funcionario = new Funcionarios([
-                'nome' => filter_var(addslashes($request->nome), FILTER_SANITIZE_SPECIAL_CHARS),
+                'nome' => addslashes(strip_tags($request->nome)),
                 'email' => filter_var($request->email, FILTER_VALIDATE_EMAIL),
                 'last_updated' => date('Y-m-d H:i:s')
             ]);
@@ -89,7 +88,9 @@ class FuncionariosController {
     public function validaDadosDoInputDoUsuario(...$dados) {
         if(empty($dados[0]->nome)) return false;
         foreach($dados[0]->telefone as $key => $telefone){
-            if(empty($dados[0]->telefone[$key]) || strlen($dados[0]->telefone[$key]) <= 5) return false;
+            if(empty($dados[0]->telefone[$key]) || strlen($dados[0]->telefone[$key]) <= 5){
+                return false;
+            }
         }
         if(!filter_var($dados[0]->email, FILTER_VALIDATE_EMAIL)) return false;
         return true;
@@ -105,7 +106,7 @@ class FuncionariosController {
         if($this->validaDadosDoInputDoUsuario($request)){
             $funcionario = new Funcionarios([
                 'id_registro' => $id,
-                'nome' => filter_var(addslashes($request->nome), FILTER_SANITIZE_SPECIAL_CHARS),
+                'nome' => addslashes(strip_tags($request->nome)),
                 'email' => filter_var($request->email, FILTER_VALIDATE_EMAIL),
                 'last_updated' => date('Y-m-d H:i:s')
             ]);
